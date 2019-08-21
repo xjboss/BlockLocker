@@ -2,51 +2,26 @@ package nl.rutgerkok.blocklocker.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
-
-import nl.rutgerkok.blocklocker.Translator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import nl.rutgerkok.blocklocker.Translator;
+
 /**
  * Provides translations from a configuration file.
  *
  */
 class ConfigTranslator extends Translator {
-    /**
-     * Little class that contains multiple translated values.
-     * This class extends a translationValue which is the primary value,
-     * it contains a list with all the other possible values.
-     *
-     */
-    private static class MultiTranslationValue extends TranslationValue {
-    	private final List<TranslationValue> aliases;
-    	
-    	private MultiTranslationValue(List<String> values) {
-    		super(values.get(0));
-    		this.aliases = new ArrayList<>();
-    		
-    		for (String alias : values.subList(1, values.size())) {
-    			this.aliases.add(new TranslationValue(alias));
-    		}
-    	}
-    	
-    	@Override
-    	public List<TranslationValue> getAll() {
-    	    List<TranslationValue> all = new ArrayList<>();
-    	    
-    	    all.add(this);
-    	    
-    	    this.aliases.forEach(value->all.add(value));
-    	    
-    	    return all;
-    	}
-    }
     /**
      * Little class to hold the different representations of the translated
      * values. The original ({@code &1foo}), the colored ({@code §1foo}) and
@@ -69,6 +44,36 @@ class ConfigTranslator extends Translator {
         }
     }
 
+    /**
+     * Little class that contains multiple translated values.
+     * This class extends a translationValue which is the primary value,
+     * it contains a list with all the other possible values.
+     *
+     */
+    private static class MultiTranslationValue extends TranslationValue {
+    	private final List<TranslationValue> aliases;
+
+    	private MultiTranslationValue(List<String> values) {
+    		super(values.get(0));
+    		this.aliases = new ArrayList<TranslationValue>();
+
+    		for (String alias : values.subList(1, values.size())) {
+    			this.aliases.add(new TranslationValue(alias));
+    		}
+    	}
+
+    	@Override
+    	public List<TranslationValue> getAll() {
+    	    List<TranslationValue> all = new ArrayList<ConfigTranslator.TranslationValue>();
+
+    	    all.add(this);
+
+    	    this.aliases.forEach(value->all.add(value));
+
+    	    return all;
+    	}
+    }
+
     private boolean needsSave = false;
     
     private final Map<Translation, TranslationValue> translations;
@@ -83,13 +88,24 @@ class ConfigTranslator extends Translator {
                 needsSave = true;
             }
 
-            String value = config.getString(key);
-            if (value == null) {
-                // No default value was specified, strange
-                value = "~~TODO translate " + key + "~~";
+            // Check if there is a list as value
+            List<String> values = config.getStringList(key);
+            
+            // No list, add string to list
+            if (values.size() <= 0) {
+                values.add(config.getString(key));
             }
-
-            translations.put(translation, new TranslationValue(value));
+            
+        	// Check the list for null values
+        	for (int i = 0; i < values.size(); i++) {
+        		if (values.get(i) == null) {
+        			// No default value was specified, strange
+                    values.set(i, "~~TODO translate " + key + "~~");
+        		}
+        	}
+        	
+        	// When there is only one value, add a translationValue, otherwise add a multiTranslationValue
+        	translations.put(translation, (values.size() == 1) ? new TranslationValue(values.get(0)) : new MultiTranslationValue(values));
         }
     }
 
@@ -122,6 +138,24 @@ class ConfigTranslator extends Translator {
     private boolean hasSpecifiedValue(ConfigurationSection config, String key) {
         return !config.getString(key, "foo").equals("foo");
     }
+
+	@Override
+	public List<String> getAll(Translation key) {
+		List<String> all = new ArrayList<String>();
+		
+		translations.get(key).getAll().forEach(value->all.add(value.colored));
+		
+		return all;
+	}
+
+	@Override
+	public List<String> getAllWithoutColor(Translation key) {
+		List<String> all = new ArrayList<String>();
+		
+		translations.get(key).getAll().forEach(value->all.add(value.uncolored));
+		
+		return all;
+	}
 
     boolean needsSave() {
         return needsSave;

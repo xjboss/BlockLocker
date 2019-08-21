@@ -31,6 +31,7 @@ import nl.rutgerkok.blocklocker.impl.group.FactionsGroupSystem;
 import nl.rutgerkok.blocklocker.impl.group.PermissionsGroupSystem;
 import nl.rutgerkok.blocklocker.impl.group.ScoreboardGroupSystem;
 import nl.rutgerkok.blocklocker.impl.group.TownyGroupSystem;
+import nl.rutgerkok.blocklocker.impl.group.mcMMOGroupSystem;
 import nl.rutgerkok.blocklocker.impl.nms.CNAccessor;
 import nl.rutgerkok.blocklocker.impl.nms.NMSAccessor;
 import nl.rutgerkok.blocklocker.impl.nms.ServerSpecific;
@@ -143,6 +144,9 @@ public class BlockLockerPluginImpl extends JavaPlugin implements
         }
         if (TownyGroupSystem.isAvailable()) {
             this.combinedGroupSystem.addSystem(new TownyGroupSystem());
+        }
+        if (mcMMOGroupSystem.isAvailable()) {
+        	this.combinedGroupSystem.addSystem(new mcMMOGroupSystem());
         }
     }
 
