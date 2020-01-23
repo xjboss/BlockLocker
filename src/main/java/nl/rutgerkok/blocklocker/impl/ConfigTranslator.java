@@ -38,7 +38,7 @@ class ConfigTranslator extends Translator {
     	
     	@Override
     	public List<TranslationValue> getAll() {
-    	    List<TranslationValue> all = new ArrayL ist<>();
+    	    List<TranslationValue> all = new ArrayList<>();
     	    
     	    all.add(this);
     	    

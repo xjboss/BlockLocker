@@ -65,6 +65,28 @@ public final class InteractListener extends EventListener {
         return true;
     }
 
+    /**
+     * Gets whether players are allowed to build in the given game mode.
+     * 
+     * @param gameMode
+     *            The game mode.
+     * @return True for survival and creative, false for the other modes.
+     */
+    private boolean canBuildInMode(GameMode gameMode) {
+        switch (gameMode) {
+            case ADVENTURE:
+                return false;
+            case CREATIVE:
+                return true;
+            case SPECTATOR:
+                return false;
+            case SURVIVAL:
+                return true;
+            default:
+                return false; // Speculative
+        }
+    }
+
     private boolean checkAllowed(Player player, Protection protection, boolean clickedSign) {
         PlayerProfile playerProfile = plugin.getProfileFactory().fromPlayer(player);
         boolean allowed = protection.isAllowed(playerProfile);
@@ -325,7 +347,7 @@ public final class InteractListener extends EventListener {
     }
 
     private boolean tryPlaceSign(Player player, Block block, BlockFace clickedSide, SignType signType) {
-        if (player.isSneaking()) {
+        if (player.isSneaking() || !canBuildInMode(player.getGameMode())) {
             return false;
         }
         if (!plugin.getChestSettings().canProtect(ProtectionType.CONTAINER, block.getType())) {
