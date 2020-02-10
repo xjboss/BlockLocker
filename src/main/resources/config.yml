@@ -17,10 +17,9 @@
 languageFile: translations-en.yml
 
 # The updater. Possible values:
-# AUTO_INSTALL - check for updates, install new files when possible, otherwise
-#                notify the server admins
 # JUST_NOTIFY - check for updates, notify the server admins
 # DISABLED - don't check for updates
+<<<<<<< HEAD
 #
 # Before installing an update, the plugin checks that
 # a) the new file is compatible with your Minecraft version
@@ -34,6 +33,9 @@ updater: DISABLED
 # Some mod containers not has their own material name, they will store as
 modContainers:
   - ic2_iridium_storage_box
+=======
+updater: JUST_NOTIFY
+>>>>>>> f1c81b7... Added Dutch translation file to the plugin
 
 # All types of containers that can be protected.
 # All material names can be found here:
