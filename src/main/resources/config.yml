@@ -1,7 +1,18 @@
 # Config file of ${project.name}.
 # This file was originally created by version ${project.version}.
 
-# The language file used by the plugin. Must be placed next to this file.
+# The language file used by the plugin. This will generate a file
+# with that name in this directory, which you can then customize
+# to edit the messages of this plugin.
+# Three pre-made files are available in this plugin:
+# - translations-en.yml
+# - translations-fr.yml (by Kervinou)
+# - translations-nl.yml
+# - translations-zh.yml (by 2125368097)
+# For other languages, you'll get the English translations as a
+# starting point. It is highly appreciated if you submit your
+# translations to the plugin author, so that others can use them
+# too. Danke schön, gracias, dankon and спасибо!
 languageFile: translations-en.yml
 
 # The updater. Possible values:
