@@ -4,11 +4,7 @@
 
 	<groupId>nl.rutgerkok</groupId>
 	<artifactId>blocklocker</artifactId>
-<<<<<<< HEAD
-	<version>1.3.5-SNAPSHOT</version>
-=======
-	<version>1.4.0</version>
->>>>>>> 275423d... Set version to 1.4.0
+	<version>cat-1.4.0</version>
 	<packaging>jar</packaging>
 
 	<name>BlockLocker</name>

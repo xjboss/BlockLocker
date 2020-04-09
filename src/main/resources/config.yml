@@ -18,7 +18,10 @@ languageFile: translations-en.yml
 # c) it is safe to install this file automatically. When the file is flagged
 #    as needing a manual installation by the plugin author, the file won't be
 #    installed automatically
-updater: AUTO_INSTALL
+updater: DISABLED
+# Some mod containers not has their own material name, they will store as
+modContainers:
+  - ic2_iridium_storage_box
 
 # All types of containers that can be protected.
 # All material names can be found here:

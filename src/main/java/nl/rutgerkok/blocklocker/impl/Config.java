@@ -1,12 +1,8 @@
 package nl.rutgerkok.blocklocker.impl;
 
-import java.util.Collection;
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 
 import com.google.common.base.Optional;
 
@@ -44,6 +40,7 @@ final class Config {
      * Combination of the sets of all individual protection types.
      */
     private final Set<Material> protectableMaterialsSet;
+    private final Set<String> protectableMaterialsSetString;
     private final UpdatePreference updatePreference;
 
     Config(Logger logger, FileConfiguration config) {
@@ -67,8 +64,10 @@ final class Config {
 
         // Create combined set
         protectableMaterialsSet = EnumSet.noneOf(Material.class);
+        protectableMaterialsSetString = new HashSet<>();
         for (Set<Material> protectableByType : protectableMaterialsMap.values()) {
             protectableMaterialsSet.addAll(protectableByType);
+            protectableMaterialsSetString.addAll(protectableByType.stream().map(Enum::name).collect(Collectors.toSet()));
         }
     }
 
@@ -92,7 +91,7 @@ final class Config {
      *         otherwise.
      */
     boolean canProtect(Material material) {
-        return protectableMaterialsSet.contains(material);
+        return protectableMaterialsSet.contains(material) || protectableMaterialsSetString.contains(material.name());
     }
 
     /**
